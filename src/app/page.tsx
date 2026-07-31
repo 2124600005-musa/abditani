@@ -1,65 +1,327 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import {
+  ArrowRight, Store, TrendingUp, GraduationCap, Cpu, MessageCircle, Handshake,
+  Users, Home as HomeIcon, Package, MapPin, ChevronRight, Star, Leaf
+} from 'lucide-react';
+
+interface Product {
+  id: number; name: string; slug: string; price: number; unit: string;
+  image: string | null; category_name: string | null; location: string | null;
+}
+
+interface Commodity {
+  id: number; name: string; slug: string; price: number; previous_price: number;
+  unit: string; region: string; change_pct: number; icon: string | null;
+}
+
+interface Article {
+  id: number; title: string; slug: string; category: string; excerpt: string;
+  thumbnail: string | null; author: string; read_time: string; created_at: string;
+}
+
+interface Category {
+  id: number; name: string; slug: string; icon: string | null; product_count: number;
+}
+
+const featureIcons: Record<string, React.ComponentType<{className?: string}>> = { Store, TrendingUp, GraduationCap, Cpu, MessageCircle, Handshake };
+
+const features = [
+  { id: 1, icon: 'Store', title: 'Marketplace Produk', description: 'Temukan benih, pupuk, dan alat pertanian dari supplier terpercaya.' },
+  { id: 2, icon: 'TrendingUp', title: 'Harga Komoditas Real-time', description: 'Pantau harga pasar terkini untuk komoditas pertanian favoritmu.' },
+  { id: 3, icon: 'GraduationCap', title: 'Edukasi Pertanian', description: 'Artikel dan panduan untuk meningkatkan produktivitas lahan.' },
+  { id: 4, icon: 'Cpu', title: 'Teknologi Pertanian', description: 'Solusi modern untuk pertanian masa depan.' },
+  { id: 5, icon: 'MessageCircle', title: 'Konsultasi Gratis', description: 'Hubungi tim kami untuk konsultasi pertanian.' },
+  { id: 6, icon: 'Handshake', title: 'Kerjasama Strategis', description: 'Jalin kemitraan dengan petani dan pelaku industri pertanian.' },
+];
+
+const stats = [
+  { value: '1,000+', label: 'Petani Terdaftar' },
+  { value: '50+', label: 'Produk Tersedia' },
+  { value: '30+', label: 'Kabupaten Terjangkau' },
+  { value: '24/7', label: 'Layanan Aktif' },
+];
+
+function HeroSection() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <section className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950 overflow-hidden">
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-300 rounded-full blur-3xl" />
+      </div>
+      <div className="container-custom relative z-10 py-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <Leaf className="w-4 h-4 text-primary-300" />
+              <span className="text-sm text-primary-100">Platform Pertanian Digital Indonesia</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+              Solusi Digital untuk{' '}
+              <span className="text-primary-300">Pertanian Indonesia</span>
+            </h1>
+            <p className="text-lg text-primary-100/80 mb-8 max-w-xl leading-relaxed">
+              AbdiTani membantu petani berkembang melalui teknologi, informasi harga, akses pasar, dan inovasi pertanian berkelanjutan.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link href="/produk" className="bg-white text-primary-800 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2">
+                Mulai Sekarang <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link href="/tentang" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
+                Jelajahi AbdiTani
+              </Link>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {stats.map((stat, i) => (
+              <div key={i} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/10">
+                <div className="text-3xl md:text-4xl font-bold text-white mb-1">{stat.value}</div>
+                <div className="text-sm text-primary-200">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FeaturesSection() {
+  return (
+    <section className="py-20 bg-gray-50">
+      <div className="container-custom">
+        <div className="text-center mb-14">
+          <h2 className="section-title">Semua Kebutuhan Pertanian dalam Satu Platform</h2>
+          <p className="section-subtitle mx-auto">
+            AbdiTani menyediakan berbagai layanan untuk membantu petani meningkatkan produktivitas dan kesejahteraan.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature) => {
+            const Icon = featureIcons[feature.icon] || Store;
+            return (
+              <div key={feature.id} className="card p-6 hover:translate-y-[-2px]">
+                <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mb-4">
+                  <Icon className="w-6 h-6 text-primary-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+              </div>
+            );
+          })}
         </div>
-      </main>
+      </div>
+    </section>
+  );
+}
+
+function CategoriesSection({ categories }: { categories: Category[] }) {
+  if (categories.length === 0) return null;
+  return (
+    <section className="py-20">
+      <div className="container-custom">
+        <div className="text-center mb-14">
+          <h2 className="section-title">Kategori Produk</h2>
+          <p className="section-subtitle mx-auto">Temukan berbagai kategori produk pertanian berkualitas.</p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {categories.map((cat) => (
+            <Link key={cat.id} href={`/produk?kategori=${cat.slug}`} className="card p-5 text-center hover:translate-y-[-2px] group">
+              <div className="text-3xl mb-2">{cat.icon || '📦'}</div>
+              <h3 className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">{cat.name}</h3>
+              <p className="text-xs text-gray-500 mt-1">{cat.product_count} produk</p>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProductsSection({ products }: { products: Product[] }) {
+  if (products.length === 0) return null;
+  return (
+    <section className="py-20 bg-gray-50">
+      <div className="container-custom">
+        <div className="flex justify-between items-center mb-10">
+          <div>
+            <h2 className="section-title">Produk Unggulan</h2>
+            <p className="section-subtitle">Produk pertanian pilihan dari supplier terpercaya.</p>
+          </div>
+          <Link href="/produk" className="text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
+            Lihat Semua <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map((p) => (
+            <Link key={p.id} href={`/produk/${p.slug}`} className="card group hover:translate-y-[-2px]">
+              <div className="relative h-48 bg-primary-50 flex items-center justify-center">
+                {p.image ? (
+                  <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="text-center text-primary-600">
+                    <Package className="w-10 h-10 mx-auto mb-2" />
+                    <span className="text-sm font-bold">AbdiTani</span>
+                  </div>
+                )}
+              </div>
+              <div className="p-4">
+                <div className="flex items-center gap-1 mb-1">
+                  <span className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full">{p.category_name || 'Umum'}</span>
+                </div>
+                <h3 className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">{p.name}</h3>
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-lg font-bold text-primary-600">Rp {p.price?.toLocaleString('id-ID')}</span>
+                  <span className="text-xs text-gray-500">/{p.unit}</span>
+                </div>
+                {p.location && (
+                  <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
+                    <MapPin className="w-3 h-3" /> {p.location}
+                  </div>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CommoditiesSection({ commodities }: { commodities: Commodity[] }) {
+  if (commodities.length === 0) return null;
+  return (
+    <section className="py-20">
+      <div className="container-custom">
+        <div className="flex justify-between items-center mb-10">
+          <div>
+            <h2 className="section-title">Harga Komoditas Hari Ini</h2>
+            <p className="section-subtitle">Pantau harga pasar komoditas pertanian terkini.</p>
+          </div>
+          <Link href="/harga-komoditas" className="text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
+            Lihat Semua <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {commodities.map((c) => (
+            <div key={c.id} className="card p-5 flex items-center gap-4">
+              <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center text-2xl">
+                {c.icon || '🌾'}
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900">{c.name}</h3>
+                <p className="text-xs text-gray-500">{c.region}</p>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-bold text-primary-600">Rp {c.price?.toLocaleString('id-ID')}</div>
+                <div className={`text-xs font-medium ${c.change_pct > 0 ? 'text-green-600' : c.change_pct < 0 ? 'text-red-600' : 'text-gray-500'}`}>
+                  {c.change_pct > 0 ? '▲' : c.change_pct < 0 ? '▼' : '─'} {Math.abs(c.change_pct || 0)}%
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ArticlesSection({ articles }: { articles: Article[] }) {
+  if (articles.length === 0) return null;
+  return (
+    <section className="py-20 bg-gray-50">
+      <div className="container-custom">
+        <div className="flex justify-between items-center mb-10">
+          <div>
+            <h2 className="section-title">Artikel & Edukasi</h2>
+            <p className="section-subtitle">Belajar pertanian modern dari para ahli.</p>
+          </div>
+          <Link href="/edukasi" className="text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
+            Lihat Semua <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {articles.map((a) => (
+            <Link key={a.id} href={`/edukasi/${a.slug}`} className="card group hover:translate-y-[-2px]">
+              <div className="relative h-44 bg-primary-50 flex items-center justify-center">
+                {a.thumbnail ? (
+                  <img src={a.thumbnail} alt={a.title} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="text-center text-primary-600">
+                    <GraduationCap className="w-10 h-10 mx-auto mb-2" />
+                    <span className="text-sm font-bold">AbdiTani</span>
+                  </div>
+                )}
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full">{a.category}</span>
+                <h3 className="font-semibold text-gray-900 mt-2 group-hover:text-primary-600 transition-colors">{a.title}</h3>
+                <p className="text-sm text-gray-600 mt-2 line-clamp-2">{a.excerpt}</p>
+                <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
+                  <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {a.author}</span>
+                  <span>{a.read_time || '5 menit'}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CTASection() {
+  return (
+    <section className="py-20 bg-gradient-to-br from-primary-600 to-primary-800">
+      <div className="container-custom text-center">
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Siap Memulai Pertanian Digital?</h2>
+        <p className="text-primary-100 text-lg mb-8 max-w-2xl mx-auto">
+          Bergabung bersama ribuan petani Indonesia yang telah merasakan manfaat teknologi digital.
+        </p>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link href="/kontak" className="bg-white text-primary-700 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2">
+            Hubungi Kami <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link href="/tentang" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
+            Pelajari Lebih Lanjut
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function HomePage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [commodities, setCommodities] = useState<Commodity[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/products').then(r => r.json()),
+      fetch('/api/commodities').then(r => r.json()),
+      fetch('/api/articles').then(r => r.json()),
+      fetch('/api/categories').then(r => r.json()),
+    ]).then(([prods, comms, arts, cats]) => {
+      setProducts(Array.isArray(prods) ? prods.slice(0, 6) : []);
+      setCommodities(Array.isArray(comms) ? comms.slice(0, 6) : []);
+      setArticles(Array.isArray(arts) ? arts.slice(0, 3) : []);
+      setCategories(Array.isArray(cats) ? cats : []);
+    }).catch(() => {});
+  }, []);
+
+  return (
+    <div>
+      <HeroSection />
+      <FeaturesSection />
+      <CategoriesSection categories={categories} />
+      <ProductsSection products={products} />
+      <CommoditiesSection commodities={commodities} />
+      <ArticlesSection articles={articles} />
+      <CTASection />
     </div>
   );
 }
