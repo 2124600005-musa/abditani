@@ -76,14 +76,8 @@ const organizationJsonLd = {
 function JsonLdScript() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
     </>
   );
 }
@@ -110,10 +104,10 @@ function HeroSection() {
               AbdiTani membantu petani berkembang melalui teknologi, informasi harga, akses pasar, dan inovasi pertanian berkelanjutan.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/produk" className="bg-white text-primary-800 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-800">
+              <Link href="/produk" className="bg-white text-primary-800 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2">
                 Lihat Produk <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link href="/edukasi" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-800">
+              <Link href="/edukasi" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
                 Jelajahi Edukasi
               </Link>
             </div>
@@ -126,32 +120,6 @@ function HeroSection() {
               </div>
             ))}
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function TrustSection() {
-  return (
-    <section aria-label="Mengapa AbdiTani" className="py-20 bg-white">
-      <div className="container-custom">
-        <div className="text-center mb-14">
-          <h2 className="section-title">Mengapa AbdiTani?</h2>
-          <p className="section-subtitle mx-auto">
-            Alasan mengapa ribuan petani mempercayai AbdiTani sebagai partner digital pertanian mereka.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {trustCards.map((card, i) => (
-            <article key={i} className="card p-6 text-center hover:translate-y-[-2px]">
-              <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <card.icon className="w-7 h-7 text-primary-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{card.title}</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">{card.description}</p>
-            </article>
-          ))}
         </div>
       </div>
     </section>
@@ -188,7 +156,21 @@ function FeaturesSection() {
 }
 
 function CategoriesSection({ categories }: { categories: Category[] }) {
-  if (categories.length === 0) return null;
+  const defaultCategories = [
+    { icon: '🌱', name: 'Benih & Bibit', slug: 'benih-bibit' },
+    { icon: '🧪', name: 'Pupuk & Nutrisi', slug: 'pupuk-nutrisi' },
+    { icon: '🚜', name: 'Alat Pertanian', slug: 'alat-pertanian' },
+    { icon: '💧', name: 'Irigasi & Hidroponik', slug: 'irigasi-hidroponik' },
+    { icon: '🌾', name: 'Hasil Panen', slug: 'hasil-panen' },
+    { icon: '🐛', name: 'Pestisida', slug: 'pestisida' },
+    { icon: '🤖', name: 'Teknologi Pertanian', slug: 'teknologi-pertanian' },
+    { icon: '🐄', name: 'Pakan Ternak', slug: 'pakan-ternak' },
+  ];
+
+  const items = categories.length > 0
+    ? categories.map(c => ({ icon: c.icon || '📦', name: c.name, slug: c.slug, count: c.product_count }))
+    : defaultCategories.map(c => ({ ...c, count: 0 }));
+
   return (
     <section aria-label="Kategori Produk" className="py-20">
       <div className="container-custom">
@@ -197,11 +179,13 @@ function CategoriesSection({ categories }: { categories: Category[] }) {
           <p className="section-subtitle mx-auto">Temukan berbagai kategori produk pertanian berkualitas.</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {categories.map((cat) => (
-            <Link key={cat.id} href={`/produk?kategori=${cat.slug}`} className="card p-5 text-center hover:translate-y-[-2px] group">
-              <div className="text-3xl mb-2">{cat.icon || '📦'}</div>
+          {items.map((cat, i) => (
+            <Link key={i} href={`/produk?kategori=${cat.slug}`} className="card p-5 text-center hover:translate-y-[-2px] group">
+              <div className="text-3xl mb-2">{cat.icon}</div>
               <h3 className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">{cat.name}</h3>
-              <p className="text-xs text-gray-500 mt-1">{cat.product_count} produk</p>
+              {'count' in cat && cat.count > 0 && (
+                <p className="text-xs text-gray-500 mt-1">{cat.count} produk</p>
+              )}
             </Link>
           ))}
         </div>
@@ -211,7 +195,14 @@ function CategoriesSection({ categories }: { categories: Category[] }) {
 }
 
 function ProductsSection({ products }: { products: Product[] }) {
-  if (products.length === 0) return null;
+  const placeholderProducts = [
+    { id: 1, name: 'Benih Padi Unggul', slug: 'benih-padi-unggul', price: 85000, unit: 'kg', image: null, category_name: 'Benih & Bibit', location: 'Jawa Barat' },
+    { id: 2, name: 'Pupuk Organik Cair', slug: 'pupuk-organik-cair', price: 45000, unit: 'liter', image: null, category_name: 'Pupuk & Nutrisi', location: 'Jawa Tengah' },
+    { id: 3, name: 'Alat Semprot Premium', slug: 'alat-semprot-premium', price: 350000, unit: 'pcs', image: null, category_name: 'Alat Pertanian', location: 'DIY Yogyakarta' },
+  ];
+
+  const items = products.length > 0 ? products.slice(0, 6) : placeholderProducts;
+
   return (
     <section aria-label="Produk Unggulan" className="py-20 bg-gray-50">
       <div className="container-custom">
@@ -225,7 +216,7 @@ function ProductsSection({ products }: { products: Product[] }) {
           </Link>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((p) => (
+          {items.map((p) => (
             <Link key={p.id} href={`/produk/${p.slug}`} className="card group hover:translate-y-[-2px]">
               <div className="relative h-48 bg-primary-50 flex items-center justify-center">
                 {p.image ? (
@@ -261,7 +252,17 @@ function ProductsSection({ products }: { products: Product[] }) {
 }
 
 function CommoditiesSection({ commodities }: { commodities: Commodity[] }) {
-  if (commodities.length === 0) return null;
+  const placeholderCommodities = [
+    { id: 1, name: 'Padi', slug: 'padi', price: 5800, previous_price: 5650, unit: 'kg', region: 'Nasional', change_pct: 2.65, icon: '🌾' },
+    { id: 2, name: 'Jagung', slug: 'jagung', price: 4200, previous_price: 4350, unit: 'kg', region: 'Nasional', change_pct: -3.45, icon: '🌽' },
+    { id: 3, name: 'Kedelai', slug: 'kedelai', price: 8500, previous_price: 8500, unit: 'kg', region: 'Nasional', change_pct: 0, icon: '🫘' },
+    { id: 4, name: 'Cabe Merah', slug: 'cabe-merah', price: 32000, previous_price: 28000, unit: 'kg', region: 'Nasional', change_pct: 14.29, icon: '🌶️' },
+    { id: 5, name: 'Kopi', slug: 'kopi', price: 65000, previous_price: 63000, unit: 'kg', region: 'Nasional', change_pct: 3.17, icon: '☕' },
+    { id: 6, name: 'Kelapa Sawit', slug: 'kelapa-sawit', price: 2850, previous_price: 2900, unit: 'kg', region: 'Nasional', change_pct: -1.72, icon: '🌴' },
+  ];
+
+  const items = commodities.length > 0 ? commodities.slice(0, 6) : placeholderCommodities;
+
   return (
     <section aria-label="Harga Komoditas" className="py-20">
       <div className="container-custom">
@@ -275,8 +276,8 @@ function CommoditiesSection({ commodities }: { commodities: Commodity[] }) {
           </Link>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {commodities.map((c) => (
-            <article key={c.id} className="card p-5 flex items-center gap-4">
+          {items.map((c) => (
+            <div key={c.id} className="card p-5 flex items-center gap-4">
               <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center text-2xl">
                 {c.icon || '🌾'}
               </div>
@@ -290,7 +291,7 @@ function CommoditiesSection({ commodities }: { commodities: Commodity[] }) {
                   {c.change_pct > 0 ? '▲' : c.change_pct < 0 ? '▼' : '─'} {Math.abs(c.change_pct || 0)}%
                 </div>
               </div>
-            </article>
+            </div>
           ))}
         </div>
       </div>
@@ -299,9 +300,16 @@ function CommoditiesSection({ commodities }: { commodities: Commodity[] }) {
 }
 
 function ArticlesSection({ articles }: { articles: Article[] }) {
-  if (articles.length === 0) return null;
+  const placeholderArticles = [
+    { id: 1, title: 'Panduan Lengkap Budidaya Padi Sawah', slug: 'panduan-budidaya-padi', category: 'Budidaya', excerpt: 'Pelajari langkah-langkah praktis budidaya padi sawah dari persiapan lahan hingga panen.', thumbnail: null, author: 'Tim AbdiTani', read_time: '8 menit' },
+    { id: 2, title: 'Mengenal Hidroponik untuk Pemula', slug: 'hidroponik-pemula', category: 'Hidroponik', excerpt: 'Cara memulai bercocok tanam hidroponik di rumah dengan modal minimal.', thumbnail: null, author: 'Tim AbdiTani', read_time: '6 menit' },
+    { id: 3, title: 'Pengendalian Hama Secara Organik', slug: 'pengendalian-hama-organik', category: 'Hama & Penyakit', excerpt: 'Tips mengendalikan hama tanaman menggunakan metode organik yang aman.', thumbnail: null, author: 'Tim AbdiTani', read_time: '5 menit' },
+  ];
+
+  const items = articles.length > 0 ? articles.slice(0, 3) : placeholderArticles;
+
   return (
-    <section aria-label="Artikel dan Edukasi" className="py-20 bg-gray-50">
+    <section aria-label="Artikel & Edukasi" className="py-20 bg-gray-50">
       <div className="container-custom">
         <div className="flex justify-between items-center mb-10">
           <div>
@@ -313,7 +321,7 @@ function ArticlesSection({ articles }: { articles: Article[] }) {
           </Link>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
-          {articles.map((a) => (
+          {items.map((a) => (
             <Link key={a.id} href={`/edukasi/${a.slug}`} className="card group hover:translate-y-[-2px]">
               <div className="relative h-44 bg-primary-50 flex items-center justify-center">
                 {a.thumbnail ? (
@@ -342,6 +350,30 @@ function ArticlesSection({ articles }: { articles: Article[] }) {
   );
 }
 
+function TrustSection() {
+  return (
+    <section aria-label="Mengapa AbdiTani" className="py-20">
+      <div className="container-custom">
+        <div className="text-center mb-14">
+          <h2 className="section-title">Mengapa AbdiTani?</h2>
+          <p className="section-subtitle mx-auto">Alasan mengapa ribuan petani mempercayai AbdiTani.</p>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {trustCards.map((card, i) => (
+            <article key={i} className="card p-6 text-center hover:translate-y-[-2px]">
+              <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <card.icon className="w-7 h-7 text-primary-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{card.title}</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">{card.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function CTASection() {
   return (
     <section aria-label="Ajakan Bertindak" className="py-20 bg-gradient-to-br from-primary-600 to-primary-800">
@@ -351,10 +383,10 @@ function CTASection() {
           Bergabung bersama ribuan petani Indonesia yang telah merasakan manfaat teknologi digital.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/kontak" className="bg-white text-primary-700 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-700">
+          <Link href="/kontak" className="bg-white text-primary-700 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2">
             Hubungi Kami <ArrowRight className="w-4 h-4" />
           </Link>
-          <Link href="/tentang" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-700">
+          <Link href="/tentang" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
             Pelajari Lebih Lanjut
           </Link>
         </div>
@@ -376,9 +408,9 @@ export default function HomePage() {
       fetch('/api/articles').then(r => r.json()),
       fetch('/api/categories').then(r => r.json()),
     ]).then(([prods, comms, arts, cats]) => {
-      setProducts(Array.isArray(prods) ? prods.slice(0, 6) : []);
-      setCommodities(Array.isArray(comms) ? comms.slice(0, 6) : []);
-      setArticles(Array.isArray(arts) ? arts.slice(0, 3) : []);
+      setProducts(Array.isArray(prods) ? prods : []);
+      setCommodities(Array.isArray(comms) ? comms : []);
+      setArticles(Array.isArray(arts) ? arts : []);
       setCategories(Array.isArray(cats) ? cats : []);
     }).catch(() => {});
   }, []);
