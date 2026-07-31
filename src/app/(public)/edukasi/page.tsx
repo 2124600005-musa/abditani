@@ -25,7 +25,20 @@ export default function Edukasi() {
         <div className="mb-8"><h1 className="text-3xl font-bold text-gray-900">Edukasi Pertanian</h1><p className="text-gray-600 mt-1">Pelajari teknik pertanian modern dari para ahli</p></div>
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-6"><div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" /><input type="text" placeholder="Cari artikel..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" /></div></div>
         <div className="flex gap-2 overflow-x-auto pb-4 mb-6">{cats.map(c => <button key={c} onClick={() => setCat(c)} className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${cat === c ? 'bg-primary-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-primary-300'}`}>{c}</button>)}</div>
-        {loading ? <div className="text-center py-20 text-gray-500">Memuat...</div> : articles.length === 0 ? <div className="text-center py-20"><p className="text-gray-500">Tidak ada artikel ditemukan</p></div> : (
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+              <p className="text-gray-500 text-sm">Memuat artikel...</p>
+            </div>
+          </div>
+        ) : articles.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
+            <span className="text-5xl mb-3 block">📚</span>
+            <p className="text-gray-500 font-medium">Tidak ada artikel ditemukan</p>
+            <p className="text-sm text-gray-400 mt-1">Coba kata kunci atau kategori lain</p>
+          </div>
+        ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">{articles.map(a => (
             <Link key={a.id} href={`/edukasi/${a.slug}`} className="card group">
               <div className="overflow-hidden">{a.thumbnail ? <img src={a.thumbnail} alt={a.title} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" /> : <div className="w-full h-48 bg-primary-50 flex items-center justify-center text-primary-600"><span className="text-4xl">📚</span></div>}</div>

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight, Store, TrendingUp, GraduationCap, Cpu, MessageCircle, Handshake,
-  Users, Home as HomeIcon, Package, MapPin, ChevronRight, Star, Leaf
+  Users, Package, MapPin, ChevronRight, Leaf, ShieldCheck, BookOpen
 } from 'lucide-react';
 
 interface Product {
@@ -44,9 +44,53 @@ const stats = [
   { value: '24/7', label: 'Layanan Aktif' },
 ];
 
+const trustCards = [
+  { icon: ShieldCheck, title: 'Informasi Terpercaya', description: 'Data dan informasi yang akurat dari sumber terverifikasi untuk membantu keputusan petani.' },
+  { icon: TrendingUp, title: 'Harga Terupdate', description: 'Pantau harga komoditas secara real-time dari berbagai pasar di Indonesia.' },
+  { icon: Cpu, title: 'Teknologi Pertanian', description: 'Solusi digital modern yang dirancang khusus untuk meningkatkan produktivitas pertanian.' },
+  { icon: BookOpen, title: 'Edukasi Praktis', description: 'Panduan dan artikel edukasi yang mudah dipahami dan langsung dapat diterapkan.' },
+];
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "AbdiTani",
+  url: "https://abditani.id",
+  description: "Platform digital pertanian Indonesia",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: "https://abditani.id/produk?q={search_term_string}",
+    "query-input": "required name=search_term_string",
+  },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "AbdiTani",
+  url: "https://abditani.id",
+  logo: "https://abditani.id/images/abditani-logo.jpg",
+  description: "Platform digital pertanian Indonesia",
+};
+
+function JsonLdScript() {
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+    </>
+  );
+}
+
 function HeroSection() {
   return (
-    <section className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950 overflow-hidden">
+    <section aria-label="Hero" className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950 overflow-hidden">
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-300 rounded-full blur-3xl" />
@@ -66,10 +110,10 @@ function HeroSection() {
               AbdiTani membantu petani berkembang melalui teknologi, informasi harga, akses pasar, dan inovasi pertanian berkelanjutan.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/produk" className="bg-white text-primary-800 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2">
+              <Link href="/produk" className="bg-white text-primary-800 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-800">
                 Mulai Sekarang <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link href="/tentang" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
+              <Link href="/tentang" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-800">
                 Jelajahi AbdiTani
               </Link>
             </div>
@@ -88,9 +132,35 @@ function HeroSection() {
   );
 }
 
+function TrustSection() {
+  return (
+    <section aria-label="Mengapa AbdiTani" className="py-20 bg-white">
+      <div className="container-custom">
+        <div className="text-center mb-14">
+          <h2 className="section-title">Mengapa AbdiTani?</h2>
+          <p className="section-subtitle mx-auto">
+            Alasan mengapa ribuan petani mempercayai AbdiTani sebagai partner digital pertanian mereka.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {trustCards.map((card, i) => (
+            <article key={i} className="card p-6 text-center hover:translate-y-[-2px]">
+              <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <card.icon className="w-7 h-7 text-primary-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{card.title}</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">{card.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function FeaturesSection() {
   return (
-    <section className="py-20 bg-gray-50">
+    <section aria-label="Fitur Unggulan" className="py-20 bg-gray-50">
       <div className="container-custom">
         <div className="text-center mb-14">
           <h2 className="section-title">Semua Kebutuhan Pertanian dalam Satu Platform</h2>
@@ -102,13 +172,13 @@ function FeaturesSection() {
           {features.map((feature) => {
             const Icon = featureIcons[feature.icon] || Store;
             return (
-              <div key={feature.id} className="card p-6 hover:translate-y-[-2px]">
+              <article key={feature.id} className="card p-6 hover:translate-y-[-2px]">
                 <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mb-4">
                   <Icon className="w-6 h-6 text-primary-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
                 <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
-              </div>
+              </article>
             );
           })}
         </div>
@@ -120,7 +190,7 @@ function FeaturesSection() {
 function CategoriesSection({ categories }: { categories: Category[] }) {
   if (categories.length === 0) return null;
   return (
-    <section className="py-20">
+    <section aria-label="Kategori Produk" className="py-20">
       <div className="container-custom">
         <div className="text-center mb-14">
           <h2 className="section-title">Kategori Produk</h2>
@@ -143,7 +213,7 @@ function CategoriesSection({ categories }: { categories: Category[] }) {
 function ProductsSection({ products }: { products: Product[] }) {
   if (products.length === 0) return null;
   return (
-    <section className="py-20 bg-gray-50">
+    <section aria-label="Produk Unggulan" className="py-20 bg-gray-50">
       <div className="container-custom">
         <div className="flex justify-between items-center mb-10">
           <div>
@@ -193,7 +263,7 @@ function ProductsSection({ products }: { products: Product[] }) {
 function CommoditiesSection({ commodities }: { commodities: Commodity[] }) {
   if (commodities.length === 0) return null;
   return (
-    <section className="py-20">
+    <section aria-label="Harga Komoditas" className="py-20">
       <div className="container-custom">
         <div className="flex justify-between items-center mb-10">
           <div>
@@ -206,7 +276,7 @@ function CommoditiesSection({ commodities }: { commodities: Commodity[] }) {
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {commodities.map((c) => (
-            <div key={c.id} className="card p-5 flex items-center gap-4">
+            <article key={c.id} className="card p-5 flex items-center gap-4">
               <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center text-2xl">
                 {c.icon || '🌾'}
               </div>
@@ -220,7 +290,7 @@ function CommoditiesSection({ commodities }: { commodities: Commodity[] }) {
                   {c.change_pct > 0 ? '▲' : c.change_pct < 0 ? '▼' : '─'} {Math.abs(c.change_pct || 0)}%
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </div>
@@ -231,7 +301,7 @@ function CommoditiesSection({ commodities }: { commodities: Commodity[] }) {
 function ArticlesSection({ articles }: { articles: Article[] }) {
   if (articles.length === 0) return null;
   return (
-    <section className="py-20 bg-gray-50">
+    <section aria-label="Artikel dan Edukasi" className="py-20 bg-gray-50">
       <div className="container-custom">
         <div className="flex justify-between items-center mb-10">
           <div>
@@ -274,17 +344,17 @@ function ArticlesSection({ articles }: { articles: Article[] }) {
 
 function CTASection() {
   return (
-    <section className="py-20 bg-gradient-to-br from-primary-600 to-primary-800">
+    <section aria-label="Ajakan Bertindak" className="py-20 bg-gradient-to-br from-primary-600 to-primary-800">
       <div className="container-custom text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Siap Memulai Pertanian Digital?</h2>
         <p className="text-primary-100 text-lg mb-8 max-w-2xl mx-auto">
           Bergabung bersama ribuan petani Indonesia yang telah merasakan manfaat teknologi digital.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/kontak" className="bg-white text-primary-700 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2">
+          <Link href="/kontak" className="bg-white text-primary-700 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-700">
             Hubungi Kami <ArrowRight className="w-4 h-4" />
           </Link>
-          <Link href="/tentang" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
+          <Link href="/tentang" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-700">
             Pelajari Lebih Lanjut
           </Link>
         </div>
@@ -315,7 +385,9 @@ export default function HomePage() {
 
   return (
     <div>
+      <JsonLdScript />
       <HeroSection />
+      <TrustSection />
       <FeaturesSection />
       <CategoriesSection categories={categories} />
       <ProductsSection products={products} />

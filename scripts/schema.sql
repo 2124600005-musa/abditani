@@ -115,3 +115,21 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   status TEXT DEFAULT 'unread',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Performance indexes
+CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug);
+CREATE INDEX IF NOT EXISTS idx_products_category_id ON products(category_id);
+CREATE INDEX IF NOT EXISTS idx_products_status ON products(status);
+CREATE INDEX IF NOT EXISTS idx_products_created_at ON products(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);
+CREATE INDEX IF NOT EXISTS idx_articles_category ON articles(category);
+CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status);
+CREATE INDEX IF NOT EXISTS idx_articles_created_at ON articles(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_news_slug ON news(slug);
+CREATE INDEX IF NOT EXISTS idx_news_status ON news(status);
+CREATE INDEX IF NOT EXISTS idx_news_published_at ON news(published_at DESC);
+CREATE INDEX IF NOT EXISTS idx_technologies_slug ON technologies(slug);
+CREATE INDEX IF NOT EXISTS idx_technologies_status ON technologies(status);
+CREATE INDEX IF NOT EXISTS idx_commodities_name ON commodities(name);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_status ON contact_messages(status);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_created_at ON contact_messages(created_at DESC);
