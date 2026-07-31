@@ -1,6 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Mail, Lock } from 'lucide-react';
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -8,19 +9,16 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/admin/dashboard', { credentials: 'include' }).then(r => { if (r.ok) router.push('/admin/dashboard'); }).catch(() => {});
-  }, [router]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form), credentials: 'include' });
+      const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
       const data = await res.json();
-      if (res.ok) { router.push('/admin/dashboard'); } else { setError(data.error || 'Login gagal'); }
-    } catch { setError('Terjadi kesalahan'); }
+      if (!res.ok) throw new Error(data.error || 'Login gagal');
+      router.push('/admin/dashboard');
+    } catch (err) { setError((err as Error).message); }
     setLoading(false);
   };
 
@@ -28,7 +26,7 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-white px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <img src="/images/abditani-logo.jpg" alt="AbdiTani" className="w-16 h-16 rounded-2xl object-cover mx-auto mb-4" />
+          <div className="inline-flex items-center gap-2 mb-4"><img src="/images/abditani-logo.jpg" alt="AbdiTani" className="w-10 h-10 rounded-xl object-cover" /><span className="text-2xl font-bold text-gray-900">AbdiTani</span></div>
           <h1 className="text-2xl font-bold text-gray-900">Admin Login</h1>
           <p className="text-gray-600 mt-1">Masuk ke panel administrasi</p>
         </div>
@@ -37,11 +35,11 @@ export default function AdminLogin() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
-              <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} required className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="admin@abditani.local" />
+              <div className="relative"><Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" /><input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} required className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="admin@abditani.local" /></div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-              <input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} required className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="••••••••" />
+              <div className="relative"><Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" /><input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} required className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="••••••••" /></div>
             </div>
             <button type="submit" disabled={loading} className="w-full btn-primary !py-3 disabled:opacity-50">{loading ? 'Masuk...' : 'Masuk sebagai Admin'}</button>
           </form>
