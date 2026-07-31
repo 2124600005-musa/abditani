@@ -111,10 +111,10 @@ function HeroSection() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/produk" className="bg-white text-primary-800 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-800">
-                Mulai Sekarang <ArrowRight className="w-4 h-4" />
+                Lihat Produk <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link href="/tentang" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-800">
-                Jelajahi AbdiTani
+              <Link href="/edukasi" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-800">
+                Jelajahi Edukasi
               </Link>
             </div>
           </div>
@@ -305,7 +305,7 @@ function ArticlesSection({ articles }: { articles: Article[] }) {
       <div className="container-custom">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h2 className="section-title">Artikel & Edukasi</h2>
+            <h2 className="section-title">Artikel & Edukasi Pertanian</h2>
             <p className="section-subtitle">Belajar pertanian modern dari para ahli.</p>
           </div>
           <Link href="/edukasi" className="text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
@@ -387,12 +387,12 @@ export default function HomePage() {
     <div>
       <JsonLdScript />
       <HeroSection />
-      <TrustSection />
       <FeaturesSection />
       <CategoriesSection categories={categories} />
       <ProductsSection products={products} />
       <CommoditiesSection commodities={commodities} />
       <ArticlesSection articles={articles} />
+      <TrustSection />
       <CTASection />
     </div>
   );
