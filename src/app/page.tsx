@@ -84,10 +84,10 @@ function JsonLdScript() {
 
 function HeroSection() {
   return (
-    <section aria-label="Hero" className="relative min-h-screen flex items-center bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950 overflow-hidden">
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-300 rounded-full blur-3xl" />
+    <section aria-label="Hero" className="relative min-h-screen flex items-center overflow-hidden">
+      <div className="absolute inset-0">
+        <img src="/images/hero-bg.jpg" alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-900/90 via-primary-800/70 to-primary-900/50" />
       </div>
       <div className="container-custom relative z-10 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
