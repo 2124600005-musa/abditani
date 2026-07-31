@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readFile, writeFile } from 'fs/promises';
-import { join } from 'path';
-
-const SETTINGS_FILE = join(process.cwd(), 'data', 'settings.json');
+import pool from '@/lib/db';
 
 const DEFAULT_SETTINGS: Record<string, string> = {
   site_name: 'AbdiTani',
@@ -22,17 +19,14 @@ function stripHtml(str: string): string {
   return str.replace(/<[^>]*>/g, '').trim();
 }
 
-async function ensureDir() {
-  const { mkdir } = await import('fs/promises');
-  await mkdir(join(process.cwd(), 'data'), { recursive: true });
-}
-
 export async function GET() {
   try {
-    const data = await readFile(SETTINGS_FILE, 'utf-8');
-    const parsed = JSON.parse(data);
-    // Merge with defaults so all keys are always present
-    return NextResponse.json({ ...DEFAULT_SETTINGS, ...parsed });
+    const result = await pool.query('SELECT key, value FROM settings');
+    const dbSettings: Record<string, string> = {};
+    for (const row of result.rows) {
+      dbSettings[row.key] = row.value;
+    }
+    return NextResponse.json({ ...DEFAULT_SETTINGS, ...dbSettings });
   } catch {
     return NextResponse.json(DEFAULT_SETTINGS);
   }
@@ -44,13 +38,15 @@ export async function PUT(request: NextRequest) {
     if (typeof data !== 'object' || data === null) {
       return NextResponse.json({ error: 'Data tidak valid' }, { status: 400 });
     }
-    // Sanitize: strip HTML tags and trim whitespace from string values
-    const sanitized: Record<string, string> = {};
+
     for (const [key, value] of Object.entries(data)) {
-      sanitized[key] = typeof value === 'string' ? stripHtml(value) : String(value);
+      const sanitized = typeof value === 'string' ? stripHtml(value) : String(value);
+      await pool.query(
+        'INSERT INTO settings (key, value, updated_at) VALUES ($1, $2, CURRENT_TIMESTAMP) ON CONFLICT (key) DO UPDATE SET value = $2, updated_at = CURRENT_TIMESTAMP',
+        [key, sanitized]
+      );
     }
-    await ensureDir();
-    await writeFile(SETTINGS_FILE, JSON.stringify(sanitized, null, 2));
+
     return NextResponse.json({ message: 'Pengaturan disimpan' });
   } catch (err) {
     console.error('Settings save error:', err);

@@ -15,18 +15,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const vals = fields.map(k => data[k]);
     await pool.query(`UPDATE news SET ${sets} WHERE id = $${fields.length + 1}`, [...vals, id]);
     return NextResponse.json({ message: 'OK' });
-  } catch (err) { return NextResponse.json({ error: 'Gagal' }, { status: 500 }); }
+  } catch { return NextResponse.json({ error: 'Gagal' }, { status: 500 }); }
 }
 
 export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const existing = await pool.query('SELECT image FROM news WHERE id = $1', [id]);
-    if (existing.rows[0]?.image) {
-      const filename = existing.rows[0].image.split('/').pop();
-      if (filename) { try { const { unlink } = await import('fs/promises'); const { join } = await import('path'); await unlink(join(process.cwd(), 'public', 'uploads', 'news', filename)); } catch {} }
-    }
     await pool.query('DELETE FROM news WHERE id = $1', [id]);
     return NextResponse.json({ message: 'OK' });
-  } catch (err) { return NextResponse.json({ error: 'Gagal' }, { status: 500 }); }
+  } catch { return NextResponse.json({ error: 'Gagal' }, { status: 500 }); }
 }

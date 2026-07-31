@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import slugify from 'slugify';
-import { unlink } from 'fs/promises';
-import { join } from 'path';
 
 const ALLOWED_FIELDS = ['name', 'slug', 'category_id', 'description', 'price', 'unit', 'stock', 'status', 'image', 'location', 'supplier', 'supplier_contact'];
 
@@ -12,7 +10,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     const result = await pool.query('SELECT * FROM products WHERE id = $1', [id]);
     if (result.rows.length === 0) return NextResponse.json({ error: 'Tidak ditemukan' }, { status: 404 });
     return NextResponse.json(result.rows[0]);
-  } catch (err) { return NextResponse.json({ error: 'Gagal' }, { status: 500 }); }
+  } catch { return NextResponse.json({ error: 'Gagal' }, { status: 500 }); }
 }
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -24,22 +22,15 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (fields.length === 0) return NextResponse.json({ error: 'Tidak ada field diupdate' }, { status: 400 });
     const sets = fields.map((k, i) => `${k} = $${i + 1}`).join(', ');
     const vals = fields.map(k => data[k]);
-    await pool.query(`UPDATE products SET ${sets} WHERE id = $${fields.length + 1}`, [...vals, id]);
+    await pool.query(`UPDATE products SET ${sets}, updated_at = CURRENT_TIMESTAMP WHERE id = $${fields.length + 1}`, [...vals, id]);
     return NextResponse.json({ message: 'Berhasil diupdate' });
-  } catch (err) { console.error(err); return NextResponse.json({ error: 'Gagal update' }, { status: 500 }); }
+  } catch { return NextResponse.json({ error: 'Gagal update' }, { status: 500 }); }
 }
 
 export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const existing = await pool.query('SELECT image FROM products WHERE id = $1', [id]);
-    if (existing.rows[0]?.image) {
-      const filename = existing.rows[0].image.split('/').pop();
-      if (filename) {
-        try { await unlink(join(process.cwd(), 'public', 'uploads', 'products', filename)); } catch {}
-      }
-    }
     await pool.query('DELETE FROM products WHERE id = $1', [id]);
     return NextResponse.json({ message: 'Berhasil dihapus' });
-  } catch (err) { return NextResponse.json({ error: 'Gagal hapus' }, { status: 500 }); }
+  } catch { return NextResponse.json({ error: 'Gagal hapus' }, { status: 500 }); }
 }
