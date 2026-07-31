@@ -64,9 +64,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     logo: `${siteUrl}/images/abditani-logo.jpg`,
     description: "Platform digital pertanian Indonesia yang menghubungkan informasi produk, harga komoditas, edukasi, berita, dan teknologi pertanian.",
     sameAs: [],
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Toko Abdi Tani, Jl. Lintas Sumatera Simp 500 II, RT.2/RW.1",
+      addressLocality: "Rambah Hilir",
+      addressRegion: "Rokan Hulu, Riau",
+      addressCountry: "ID",
+    },
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
+      telephone: "+62-813-6408-3093",
       availableLanguage: "Indonesian",
     },
   };

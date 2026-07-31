@@ -383,11 +383,11 @@ function CTASection() {
           Bergabung bersama ribuan petani Indonesia yang telah merasakan manfaat teknologi digital.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/kontak" className="bg-white text-primary-700 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2">
-            Hubungi Kami <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link href="/tentang" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
-            Pelajari Lebih Lanjut
+          <a href="https://wa.me/6281364083093" target="_blank" rel="noopener noreferrer" className="bg-white text-primary-700 px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-50 transition-all duration-300 flex items-center gap-2">
+            WhatsApp Kami <ArrowRight className="w-4 h-4" />
+          </a>
+          <Link href="/kontak" className="border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
+            Formulir Kontak
           </Link>
         </div>
       </div>

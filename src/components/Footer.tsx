@@ -57,7 +57,7 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-4">Hubungi Kami</h4>
             <div className="space-y-2 text-sm">
-              <p>Jl. Pertanian No. 123, Jakarta Selatan</p>
+              <p>Toko Abdi Tani, Jl. Lintas Sumatera Simp 500 II, RT.2/RW.1, Rambah Hilir, Rokan Hulu, Riau</p>
               <p>
                 <a
                   href="mailto:info@abditani.id"
@@ -69,11 +69,13 @@ export default function Footer() {
               </p>
               <p>
                 <a
-                  href="tel:+622112345678"
+                  href="https://wa.me/6281364083093"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded"
-                  aria-label="Telepon +62 21 1234 5678"
+                  aria-label="WhatsApp +62 813-6408-3093"
                 >
-                  +62 21 1234 5678
+                  +62 813-6408-3093
                 </a>
               </p>
             </div>

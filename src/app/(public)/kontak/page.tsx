@@ -28,15 +28,15 @@ export default function Kontak() {
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="space-y-6">
             {[
-              { icon: MapPin, title: 'Alamat', text: 'Jl. Pertanian No. 123, Jakarta Selatan, DKI Jakarta 12345' },
-              { icon: Phone, title: 'Telepon', text: '+62 21 1234 5678' },
+              { icon: MapPin, title: 'Alamat', text: 'Toko Abdi Tani, Jl. Lintas Sumatera Simp 500 II, RT.2/RW.1, Rambah Hilir, Rokan Hulu, Riau' },
+              { icon: Phone, title: 'WhatsApp', text: '+62 813-6408-3093', href: 'https://wa.me/6281364083093' },
               { icon: Mail, title: 'Email', text: 'info@abditani.id' },
               { icon: Clock, title: 'Jam Kerja', text: 'Senin - Jumat: 08:00 - 17:00' }
             ].map((c, i) => (
               <div key={i} className="bg-white rounded-2xl p-6 border border-gray-100">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center shrink-0"><c.icon className="w-5 h-5 text-primary-600" /></div>
-                  <div><h3 className="font-semibold text-gray-900 mb-1">{c.title}</h3><p className="text-sm text-gray-600">{c.text}</p></div>
+                  <div><h3 className="font-semibold text-gray-900 mb-1">{c.title}</h3>{'href' in c && c.href ? <a href={c.href} target="_blank" rel="noopener noreferrer" className="text-sm text-primary-600 hover:underline">{c.text}</a> : <p className="text-sm text-gray-600">{c.text}</p>}</div>
                 </div>
               </div>
             ))}
