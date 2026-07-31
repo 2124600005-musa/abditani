@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://abditani.vercel.app';
 
@@ -87,7 +88,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased min-h-screen">{children}</body>
+      <body className="antialiased min-h-screen">{children}<WhatsAppFloat /></body>
     </html>
   );
 }
